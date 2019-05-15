@@ -5,25 +5,61 @@ import {
 
 import Header from './header'
 import Receipt from './receipt'
+import ReceiptDetail from './receiptDetail'
 
-const listOfReceipts = (props)=>(
-  <View style={myStyles.main}>
-    <Header title='Receipts'
-      goBack = {props.moveToHome}
-    />
+class ListOfReceipts extends React.Component{
+  state = {
+    currentScreen: 'LIST_RECEIPTS',
+    selectedReceipt: {},
+    selectedReceiptNumber: -1
+  }
 
-    <View style={myStyles.content}>
-      {props.list.map((rcpt, index)=>(
-          <Receipt key={index}
-              receiptNumber={index+1}
-              receiptDate={rcpt.createdAt}
-              receiptData={rcpt}
-            />
-        ))
-      }
-    </View>
-  </View>
-)
+  viewDetails(selectedReceipt, selectedReceiptNumber){
+    this.setState({
+      currentScreen: 'RECEIPT_DETAIL',
+      selectedReceipt,
+      selectedReceiptNumber
+    })
+  }
+
+  render(){
+    let { currentScreen,
+          selectedReceipt:{paidFor, companyName, balance, createdAt, amount},
+          selectedReceiptNumber
+        } = this.state
+
+     if (currentScreen === 'RECEIPT_DETAIL'){
+       return (<ReceiptDetail
+                paidFor= {paidFor}
+                balance={balance}
+                createdAt={createdAt}
+                companyName={companyName}
+                amount={amount}
+                receiptNumber={selectedReceiptNumber}
+            />)
+     }
+
+      return (
+        <View style={myStyles.main}>
+          <Header title='Receipts'
+            goBack = {this.props.moveToHome}
+          />
+
+          <View style={myStyles.content}>
+            {this.props.list.map((rcpt, index)=>(
+                <Receipt key={index}
+                    receiptNumber={index+1}
+                    receiptDate={rcpt.createdAt}
+                    receiptData={rcpt}
+                    viewDetails = {()=>this.viewDetails(rcpt, index+1)}
+                  />
+              ))
+            }
+          </View>
+        </View>
+      )
+  }
+}
 
 const myStyles = StyleSheet.create({
   main: {
@@ -34,4 +70,4 @@ const myStyles = StyleSheet.create({
   }
 })
 
-export default listOfReceipts
+export default ListOfReceipts

@@ -4,7 +4,9 @@ import {
 } from 'react-native'
 
 export default (props)=>(
-  <TouchableOpacity style={receiptStyles.main}>
+  <TouchableOpacity style={receiptStyles.main}
+    onPress={props.viewDetails}
+  >
     <Text style={receiptStyles.receiptNo}>
       Cash sale {props.receiptNumber}
     </Text>
